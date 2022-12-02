@@ -65,6 +65,16 @@ namespace unit {
     is_unit_specialization_of<unit_template, T>::value;
 
 
+    template <
+        template <int, metric_prefix_ratio> UT1,
+        template <int, metric_prefix_ratio> UT2
+    > struct is_same_unit_template : std::false_type {};
+
+    template <
+        template <int, metric_prefix_ratio> UT,
+    > struct is_same_unit_template<UT, UT> : std::true_type {};
+
+
     // Checks if a type 'T' is a unit
     template <typename T>
         struct is_unit {
@@ -77,6 +87,37 @@ namespace unit {
     template <typename T>
         concept unit = is_unit<T>;
 
+
+    template <unit T, unit V>
+        concept same_unit_different_metric_prefix = 
+        is_same_unit_template<
+            T::derived_basic_unit_template,
+            V::derived_basic_unit_template
+        >::value &&
+
+        !std::is_same_v<
+            T::derived_metric_prefix,
+            V::derived_metric_prefix
+        >;
+        
+
+    template <unit T, unit V>
+        concept same_unit_different_power = 
+        is_same_unit_template<
+            T::derived_basic_unit_template,
+            V::derived_basic_unit_template
+        >::value &&
+
+        std::bool_constant<(
+            T::power != V::power
+        )>::value;
+
+    template <unit T, unit V>
+        concept same_unit = 
+        is_same_unit_template<
+            T::derived_basic_unit_template,
+            V::derived_basic_unit_template
+        >::value;
     
     // For Integer or Whole number units. Helps with addition accuracy for different unit prefixes
     struct no_include_base_10_compensator {};
@@ -84,10 +125,9 @@ namespace unit {
         protected: int base_10_compensator {};
     };
 
-
     /* Inheritable template struct for implementing unit templates */
     template <
-        template <metric_prefix_ratio> struct derived_template,
+        template <int, metric_prefix_ratio> struct derived_template,
         QuantitativeType Qt,
         int exp_power = 1,
         metric_prefix_ratio R = no_prefix
@@ -107,19 +147,21 @@ namespace unit {
         static const int power {exp_power};
         static const bool is_unit {true};
 
-        using metric_prefix = R;
-        using basic_unit_derived_template = derived_template;
-        using derived_specialization = derived_template<metric_prefix, exp_power>;
+        using derived_metric_prefix = R;
+        using derived_basic_unit_template = derived_template;
+        using derived_specialization = derived_template<exp_power, metric_prefix>;
         using quantative_type = Qt;
 
-        template <typename T>
-            struct is_same_unit : std::false_type {};
 
-        template <metric_prefix_ratio matched_prefix>
-            struct is_same_unit<derived_template<matched_prefix>> : std::true_type {};
 
         derived_specialization operator+(const auto&);
+        derived_specialization operator+(const same_unit_different_metric_prefix<derived_specialization> auto&);
+        derived_specialization operator+(const derived_specialization&);
+
         derived_specialization operator-(const auto&);
+        derived_specialization operator-(const same_unit_different_metric_prefix<derived_specialization> auto&);
+        derived_specialization operator-(const derived_specialization&);
+
         derived_specialization operator*(const auto&);
         derived_specialization operator/(const auto&);
 
@@ -127,8 +169,6 @@ namespace unit {
         derived_specialization operator-=(const auto&);
         derived_specialization operator*=(const auto&);
         derived_specialization operator/=(const auto&);
-
-        template <metric_prefix_ratio P> operator derived_template<P> ();
     };
 }
 
