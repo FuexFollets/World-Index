@@ -113,7 +113,7 @@ namespace unit {
         )>::value;
 
     template <unit T, unit V>
-        concept same_unit = 
+        concept same_unit_as = 
         is_same_unit_template<
             T::derived_basic_unit_template,
             V::derived_basic_unit_template
@@ -163,7 +163,11 @@ namespace unit {
         derived_specialization operator-(const derived_specialization&);
 
         derived_specialization operator*(const auto&);
+        auto operator*(const same_unit_as<derived_specialization> auto& multiplied) -> 
+            derived_template<decltype(multiplied)::power + power, derived_metric_prefix>;
         derived_specialization operator/(const auto&);
+        auto operator/(const same_unit_as<derived_specialization> auto& multiplied) -> 
+            derived_template<decltype(multiplied)::power - power, derived_metric_prefix>;
 
         derived_specialization operator+=(const auto&);
         derived_specialization operator-=(const auto&);
