@@ -1,12 +1,12 @@
 [
   {
     "arguments": [
-      "/usr/bin/g++",
+      "/bin/g++",
       "-c",
       "-std=c++20",
       "main.cpp"
     ],
-    "directory": "/home/fuexfollets/Projects/World-Index",
-    "file": "/home/fuexfollets/Projects/World-Index/main.cpp"
+    "directory": ".",
+    "file": ""
   }
 ]
