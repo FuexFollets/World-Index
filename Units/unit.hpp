@@ -128,9 +128,9 @@ namespace unit {
     /* Inheritable template struct for implementing unit templates */
     template <
         template <int, metric_prefix_ratio> struct derived_template,
-        QuantitativeType Qt,
-        int exp_power = 1,
-        metric_prefix_ratio R = no_prefix
+        metric_prefix_ratio R = no_prefix,
+        bool is_reciporical = false,
+        typename... unit_multiples
     >
     struct basic_unit :
         std::conditional<
