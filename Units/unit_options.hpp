@@ -43,7 +43,6 @@ namespace unit {
 
     template <
         metric_prefix_ratio prefix,
-        bool reciporical,
         int power,
         typename unit_name,
         typename quantative_type = default_quantative_type
