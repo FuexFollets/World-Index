@@ -42,18 +42,15 @@ namespace unit {
 
     template <
         int exponent_power,
-        metric_prefix_ratio ratio
-    > struct basic_unit_option {
-        static const int power {exponent_power};
-        using metric_prefix = ratio;
-    };
-
-    template <
-        typename single_letter_name,
+        metric_prefix_ratio ratio,
+        const char* single_letter_name,
         typename QuantitativeType = default_quantative_type
     > struct unit_option {
-        using unit_name = single_letter_name;
+        const char* unit_name = single_letter_name;
         using quantative_type = QuantitativeType;
+
+        static const int power {exponent_power};
+        using metric_prefix = ratio;
     };
 
 }
