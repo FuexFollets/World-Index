@@ -43,8 +43,13 @@ namespace unit {
 
     template <
         metric_prefix_ratio prefix,
-        int power,
-        typename unit_name,
-        typename quantative_type = default_quantative_type
-    > struct unit_option {};
+        int exponent_power,
+        typename single_letter_name,
+        typename QuantitativeType = default_quantative_type
+    > struct unit_option {
+        using metric_prefix = prefix;
+        using unit_name = single_letter_name;
+        using quantative_type = QuantitativeType;
+        static const int power {exponent_power};
+    };
 }
