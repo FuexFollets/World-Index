@@ -40,16 +40,20 @@ namespace unit {
         constexpr_power_of_10(T::num) && constexpr_power_of_10(T::den) ||
         std::same_as<T, no_prefix>;
 
+    template <
+        int exponent_power,
+        metric_prefix_ratio ratio
+    > struct basic_unit_option {
+        static const int power {exponent_power};
+        using metric_prefix = ratio;
+    };
 
     template <
-        metric_prefix_ratio prefix,
-        int exponent_power,
         typename single_letter_name,
         typename QuantitativeType = default_quantative_type
     > struct unit_option {
-        using metric_prefix = prefix;
         using unit_name = single_letter_name;
         using quantative_type = QuantitativeType;
-        static const int power {exponent_power};
     };
+
 }
