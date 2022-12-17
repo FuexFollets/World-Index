@@ -32,34 +32,7 @@ namespace unit {
         public:
 
         using unit_option = option;
-        
-
-        using derived_metric_prefix = R;
-        using derived_basic_unit_template = derived_template;
-        using derived_specialization = derived_template<exp_power, metric_prefix>;
-        using quantative_type = Qt;
-
-
-
-        derived_specialization operator+(const auto&);
-        derived_specialization operator+(const same_unit_different_metric_prefix<derived_specialization> auto&);
-        derived_specialization operator+(const derived_specialization&);
-
-        derived_specialization operator-(const auto&);
-        derived_specialization operator-(const same_unit_different_metric_prefix<derived_specialization> auto&);
-        derived_specialization operator-(const derived_specialization&);
-
-        derived_specialization operator*(const auto&);
-        auto operator*(const same_unit_as<derived_specialization> auto& multiplied) -> 
-            derived_template<decltype(multiplied)::power + power, derived_metric_prefix>;
-        derived_specialization operator/(const auto&);
-        auto operator/(const same_unit_as<derived_specialization> auto& multiplied) -> 
-            derived_template<decltype(multiplied)::power - power, derived_metric_prefix>;
-
-        derived_specialization operator+=(const auto&);
-        derived_specialization operator-=(const auto&);
-        derived_specialization operator*=(const auto&);
-        derived_specialization operator/=(const auto&);
+        using this_type = basic_unit<option, specalized_template>;
     };
 }
 
