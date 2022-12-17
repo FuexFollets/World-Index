@@ -3,6 +3,7 @@
 #include <concepts>
 #include <string>
 #include <type_traits>
+#include <algorithm>
 
 /* Synopsis:
  * Contains the default qunatative_type for all units
@@ -10,6 +11,15 @@
  */
 
 namespace unit {
+    template <std::size_t name_size>
+    struct unit_name_literal {
+        constexpr unit_name_literal(const char (&str)[name_size]) {
+            std::copy_n(str, name_size, value);
+        }
+
+        const char value[name_size];
+    };
+
     using default_quantative_type = long double; // the quantative type for all units
 
     /* Checks if a integer is a integer power of 10 */
@@ -43,13 +53,12 @@ namespace unit {
     template <
         int exponent_power,
         metric_prefix_ratio ratio,
-        const char* single_letter_name,
+        unit_name_literal single_letter_name,
         typename QuantitativeType = default_quantative_type
     > struct unit_option {
-        const char* unit_name = single_letter_name;
+        static constexpr const char* const unit_name = single_letter_name.value;
+        static constexpr const int power {exponent_power};
         using quantative_type = QuantitativeType;
-
-        static const int power {exponent_power};
         using metric_prefix = ratio;
     };
 
