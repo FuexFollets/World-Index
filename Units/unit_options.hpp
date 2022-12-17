@@ -3,6 +3,7 @@
 #include <concepts>
 #include <string>
 #include <type_traits>
+#include <typeinfo>
 #include <algorithm>
 
 /* Synopsis:
@@ -62,4 +63,11 @@ namespace unit {
         using metric_prefix = ratio;
     };
 
+    template <typename T>
+        concept unit_option_type = requires {
+            T::unit_name;
+            T::power;
+            typeid(T::quantative_type);
+            typeid(T::metric_prefix);
+    };
 }
