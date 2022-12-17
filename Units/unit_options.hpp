@@ -52,13 +52,13 @@ namespace unit {
         std::same_as<T, no_prefix>;
 
     template <
-        int exponent_power,
+        typename exponent_power,
         metric_prefix_ratio ratio,
         unit_name_literal single_letter_name,
         typename QuantitativeType = default_quantative_type
     > struct unit_option {
         static constexpr const char* const unit_name = single_letter_name.value;
-        static constexpr const int power {exponent_power};
+        static constexpr const int power {exponent_power::value};
         using quantative_type = QuantitativeType;
         using metric_prefix = ratio;
     };
