@@ -43,35 +43,32 @@ namespace unit { namespace constraints {
             : std::true_type {};
 
 
+        template <typename T, typename U>
+        concept same_unit_as = 
+            is_unit<T>::value && is_unit<U>::value &&
+            std::is_same_v<T, U>;
     } // end of namespace constraints
 
-
-    struct include_base_10_compensator {
-        int compensated_power {};
-    };
 
     struct no_include_base_10_compensator {};
 
     /* Inheritable template struct for implementing unit templates */
     template <
         unit_option_type option,
-        template <typename...> typename specalized_template
+        template <typename> typename specalized_template
     >
-    struct basic_unit :
-        std::conditional<
-            std::is_integral_v<typename option::quantative_type>,
-            no_include_base_10_compensator,
-            include_base_10_compensator
-        > {
+    struct basic_unit {
         protected:
 
-        typename option::quantative_type value;
+        typename option::quantative_type value; // only member variable
 
         public:
 
         using unit_option = option;
         using this_type = basic_unit<option, specalized_template>;
         using is_unit = std::integral_constant<bool, true>;
+
+        this_type operator+(const this_type& measure) { return this_type {value + measure.value}; }
     };
 } // end of namespace unit
 
