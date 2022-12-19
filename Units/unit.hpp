@@ -8,8 +8,6 @@
 #include "unit_options.hpp"
 
 namespace unit { namespace constraints {
-        // Integral constant that checks if two unit templates (template structs that have derived from basic_unit) are the same
-
         // Integral constant which evaluates to true if type 'T' is a unit
         template <typename T>
             struct is_unit : std::integral_constant<bool,
@@ -32,6 +30,7 @@ namespace unit { namespace constraints {
               T::unit_option::power == U::unit_option::power
         >;
 
+        // Integral constant that checks if two units are instantiated from the same template
         template <unit T, unit U>
         struct is_same_unit_template : std::is_same<T, U> {};
 
@@ -47,6 +46,12 @@ namespace unit { namespace constraints {
         concept same_unit_as = 
             is_unit<T>::value && is_unit<U>::value &&
             std::is_same_v<T, U>;
+
+
+        // Type constraint for instantiation of same unit template
+        template <typename T, typename U>
+        concept same_template_as = is_same_unit_template<T, U>::value;
+
     } // end of namespace constraints
 
 
