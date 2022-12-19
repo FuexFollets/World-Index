@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <typeinfo>
 #include <algorithm>
+#include <stddef.h>
 
 /* Synopsis:
  * Contains the default qunatative_type for all units
@@ -12,14 +13,9 @@
  */
 
 namespace unit {
-    template <std::size_t name_size>
-    struct unit_name_literal {
-        constexpr unit_name_literal(const char (&str)[name_size]) {
-            std::copy_n(str, name_size, value);
-        }
-
-        const char value[name_size];
-    };
+    template <char... letters>
+    struct unit_name_literal : std::integer_sequence<char, letters...>
+        {};
 
     using default_quantative_type = long double; // the quantative type for all units
 
@@ -54,13 +50,21 @@ namespace unit {
     template <
         typename exponent_power,
         metric_prefix_ratio ratio,
-        unit_name_literal name,
+        typename name,
         typename QuantitativeType = default_quantative_type
     > struct unit_option {
-        static constexpr const char* const unit_name = name.value;
+        using unit_name = name;
         static constexpr const int power {exponent_power::value};
         using quantative_type = QuantitativeType;
         using metric_prefix = ratio;
+    };
+
+    template <
+        typename exponent_power,
+        metric_prefix_ratio ratio
+    > struct derived_unit_option {
+        static constexpr const int power {exponent_power::value};
+        using prefix = ratio;
     };
 
     template <typename T>
