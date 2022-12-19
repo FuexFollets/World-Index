@@ -9,15 +9,7 @@
 
 namespace unit { namespace constraints {
         // Integral constant that checks if two unit templates (template structs that have derived from basic_unit) are the same
-        template <
-            template <typename...> typename T1,
-            template <typename...> typename T2
-        > struct is_same_unit_template : std::false_type {};
-        
-        template <template <typename...> typename T>
-            struct is_same_unit_template<T, T> : std::true_type {};
 
-        
         // Integral constant which evaluates to true if type 'T' is a unit
         template <typename T>
             struct is_unit : std::integral_constant<bool,
@@ -31,15 +23,27 @@ namespace unit { namespace constraints {
         template <unit T, unit U>
         using is_same_metric_prefix_ratio = std::is_same<
             typename T::unit_option::metric_prefix,
-            typename U::unit_option::metric_prefix>;
-            
+            typename U::unit_option::metric_prefix
+        >;
+
         // Integral constant that checks if two units have the same power
         template <unit T, unit U>
         using is_same_power = std::integral_constant<bool,
-              T::unit_option::power == U::unit_option::power>;
-        
-    } // end of namespace constraints
+              T::unit_option::power == U::unit_option::power
+        >;
 
+        template <unit T, unit U>
+        struct is_same_unit_template : std::is_same<T, U> {};
+
+        template <
+            template <typename...> typename unit_template,
+            typename T1arg1, typename T1arg2,
+            typename T2arg1, typename T2arg2
+        > struct is_same_unit_template<unit_template<T1arg1, T1arg2>, unit_template<T2arg1, T2arg2>>
+            : std::true_type {};
+
+
+    } // end of namespace constraints
 
 
     struct include_base_10_compensator {
